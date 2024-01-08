@@ -1,0 +1,6 @@
+Customer_Id,FullName,Email,Gender,Contact_No,Photo,SkillSet,DOB,Status,Location,Address
+1,Parameswari,Param@gmail.com,FEMALE,9952032862,NULL,"C,JAVA",02-12-1970,TRUE,NULL,"{""DoorNo"":16,""StreetName"":""First Street"",""City"":""Chennai"",""Pincode"":602024}"
+2,Bala,bala@gmail.com,MALE,9952032863,NULL,"C,JAVA",03-12-1965,FALSE,NULL,"{""DoorNo"":16,""StreetName"":""First Street"",""City"":""Chennai"",""Pincode"":602024}"
+3,Vignesh,vignesh@gmail.com,MALE,9952032864,NULL,"C,JAVA,Python",04-12-1995,TRUE,NULL,"{""DoorNo"":16,""StreetName"":""First Street"",""City"":""Chennai"",""Pincode"":602024}"
+4,Shantha,shantha@gmail.com,FEMALE,9952032865,NULL,C,05-12-1974,FALSE,NULL,"{""DoorNo"":16,""StreetName"":""First Street"",""City"":""Chennai"",""Pincode"":602024}"
+5,Anoop,anoop@gmail.com,MALE,9952032866,NULL,"C,JAVA",06-12-2001,TRUE,NULL,"{""DoorNo"":16,""StreetName"":""First Street"",""City"":""Chennai"",""Pincode"":602024}"
