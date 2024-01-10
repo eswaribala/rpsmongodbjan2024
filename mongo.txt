@@ -1,0 +1,12 @@
+db.users.updateMany(
+   { },
+   [
+     { $set: { gender: { $switch: {
+                           branches: [
+                               { case: { $eq: [ "$gender", 'male' ] }, then: "female" },
+                               { case: { $eq: [ "$gender", 'female' ] }, then: "male" }
+                           ],
+                           default: ""
+     } } } }
+   ]
+)
