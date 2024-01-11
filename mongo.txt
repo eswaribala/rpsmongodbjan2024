@@ -1,3 +1,128 @@
+use socialdb;
+db.createCollection("users");
+show collections
+=============================
+db.users.insertOne({
+        "fname": "parameswari", 
+        "lname": "bala",
+        "dob": "1970-12-02",
+        "email":"Parameswaribala@gmail.com",
+        "password":"test@123",
+        "gender":"female",
+        "address":{
+            "doorNo":"16",
+            "streetName":"First Street",
+            "city":"Chennai",
+            "postalCode":602024
+              },
+        "phoneNo":9952032862      
+        })
+================================
+
+ db.users.insertMany([{
+        "fname": "Bala", 
+        "lname": "Manickamuthu",
+        "dob": "1965-04-27",
+        "email":"bala@gmail.com",
+        "password":"test@123",
+        "gender":"male",
+        "address":{
+            "doorNo":"16",
+            "streetName":"First Street",
+            "city":"Chennai",
+            "postalCode":602024
+              },
+        "phoneNo":8056050425   
+        },
+{
+        "fname": "vignesh", 
+        "lname": "bala",
+        "dob": "1995-12-07",
+        "email":"vignesh@gmail.com",
+        "password":"test@123",
+        "gender":"male",
+        "address":{
+            "doorNo":"16",
+            "streetName":"First Street",
+            "city":"Chennai",
+            "postalCode":602024
+              },
+        "phoneNo":8056010299      
+        },
+{
+        "fname": "hoshini", 
+        "lname": "vignesh",
+        "dob": "1999-01-31",
+        "email":"hoshini@gmail.com",
+        "password":"test@123",
+        "gender":"female",
+        "address":{
+            "doorNo":"16",
+            "streetName":"First Street",
+            "city":"Chennai",
+            "postalCode":602024
+              },
+        "phoneNo":9952032863      
+        }
+])
+==============================
+db.users.countDocuments()
+
+db.users.distinct("lname");
+
+db.users.countDocuments({"lname":"bala"});
+
+db.users.countDocuments({"fname":"parameswari","lname":"bala"});
+
+db.users.findOne({"fname":"parameswari","lname":"bala"});
+
+db.users.find({"fname":"parameswari","lname":"bala"}).pretty();
+db.users.find({"lname":"bala"}).pretty();
+db.users.find( {age: { $gte: 50}}, {"fname": 1})
+
+
+
+=========================
+db.users.updateOne({
+    fname: "Bala"
+}, {
+    $set: {
+        age: 52
+    }
+})
+db.users.aggregate([
+   { "$group": {
+      "_id": null,
+      "MaxAge": { "$max": "$age" },
+      "MinAge": { "$min": "$age" }
+   }}
+])
+
+
+db.users.aggregate([
+   { "$group": {
+      "_id": {"gender":"$gender"},
+      "MaxAge": { "$max": "$age" },
+      "MinAge": { "$min": "$age" }
+   }}
+])
+
+db.users.updateOne({
+    fname: "Bala"
+}, {
+    $min: {
+        age: 52
+    }
+})
+
+db.users.updateOne({
+    fname: "Bala"
+}, {
+    $max: {
+        age: 58
+    }
+})
+
 db.users.updateMany(
    { },
    [
@@ -10,3 +135,86 @@ db.users.updateMany(
      } } } }
    ]
 )
+
+ db.users.updateOne({ "fname":"Bala"  }, { $mul: { age: 1.2 } })
+
+
+
+db.users.updateOne({fname: "Bala"}, {$inc: {"address.postalCode":10}}) 
+
+db.users.updateMany({}, {$rename: {"address.postalCode":"address.postalcode"}})
+===========================================
+db.users.deleteOne({"fname": "Bala"})
+db.users.deleteMany( { fname: { $in: [ "Parameswari", "Bala" ] } } )
+===============================================================
+Embedded Document
+{
+    _id: ObjectId("32521df3f4948bd2f54218"),
+    firstName: "John",
+    lastName: "King",
+    department: { 
+                _id: ObjectId("55214df3f4948bd2f8753"), 
+                name:"Finance"
+            },
+    address: {
+        phone: { type: "Home", number: "111-000-000" }
+    }
+}
+
+Array
+{
+    _id: ObjectId("32521df3f4948bd2f54218"),
+    firstName: "John",
+    lastName: "King",
+    email: "john.king@abc.com",
+    skills: [ "Angular", "React", "MongoDB" ],
+}
+===================================================
+Array operators
+
+use employeesdb;
+
+db.createCollection("employees", { 
+   validator: { 
+      $jsonSchema: { 
+         bsonType: ["object"], 
+         required: [ "name", "year", "skills", "address" ], 
+         properties: { 
+            name: { 
+               bsonType: ["string"], 
+               description: "must be a string and is required" 
+            }, 
+            year: { 
+               bsonType: ["int"], 
+               minimum: 2017, 
+               maximum: 2021, 
+               description: "must be an integer in [ 2017, 2021] and is required" 
+            }, 
+            skills: { 
+               bsonType:["array"],
+               minItems: 1,              
+               description: "can only be one of the enum values and is required" 
+            }, 
+            salary: { 
+               bsonType: [ "int" ], 
+               description: "must be a double if the field exists" 
+            }, 
+            address: { 
+               bsonType: ["object"], 
+               required: [ "city" ], 
+               properties: { 
+                  street: { 
+                     bsonType: ["string"], 
+                     description: "must be a string if the field exists" 
+                  }, 
+                  city: { 
+                     bsonType: ["string"],
+                      enum: [ "chennai", "bangalore", "pune", null ],  
+                     description: "must be a string and is required" 
+                  } 
+               } 
+            } 
+         } 
+      } 
+   } 
+})
