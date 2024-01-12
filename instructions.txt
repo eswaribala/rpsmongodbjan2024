@@ -1,0 +1,66 @@
+docker network create lti_network
+
+Go to config server folder
+docker-compose up -d
+mongosh mongodb://192.168.205.92:10001
+
+rs.initiate(
+  {
+    _id: "config_rs",
+    configsvr: true,
+    members: [
+      { _id : 0, host : "192.168.205.92:10001" },
+      { _id : 1, host : "192.168.205.92:10002" },
+      { _id : 2, host : "192.168.205.92:10003" }
+    ]
+  }
+)
+rs.status()
+
+Go to shard server1 folder
+docker-compose up -d
+mongosh mongodb://192.168.205.92:20001
+rs.initiate(
+  {
+    _id: "shard1_rs",
+    members: [
+      { _id : 0, host : "192.168.205.92:20001" },
+      { _id : 1, host : "192.168.205.92:20002" },
+      { _id : 2, host : "192.168.205.92:20003" }
+    ]
+  }
+)
+
+rs.status()
+
+Go to shard server2 folder
+docker-compose up -d
+
+mongosh mongodb://192.168.205.92:20004
+
+rs.initiate(
+  {
+    _id: "shard2_rs",
+    members: [
+      { _id : 0, host : "192.168.205.92:20004" },
+      { _id : 1, host : "192.168.205.92:20005" },
+      { _id : 2, host : "192.168.205.92:20006" }
+    ]
+  }
+)
+rs.status()
+
+run router
+Goto router folder
+docker-compose up -d
+
+mongosh mongodb://192.168.205.92:30000
+
+sh.addShard("shard1_rs/192.168.205.92:20001,192.168.205.92:20002,192.168.205.92:20003")
+
+sh.addShard("shard2_rs/192.168.205.92:20004,192.168.205.92:20005,192.168.205.92:20006")
+sh.status()
+sh.enableSharding("testdb")
+sh.shardCollection("testdb.employees", { name: 1 } )
+db.employees.insertOne({"name":"Parameswari"})
+db.employees.getShardDistribution()
